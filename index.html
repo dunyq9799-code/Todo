@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My To-Do List</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background-color: #FAF8F5;
+      color: #444;
+      margin: 0;
+      padding: 0;
+      transition: background 0.4s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: #2F2F2F;
+      color: #F9F9F9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px 100px;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 400;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    body.dark h1 {
+      color: #FFF;
+    }
+
+    .input-section {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #E5DFD3;
+      border-radius: 12px;
+      background-color: #FFFDF8;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #D8CBAF;
+      box-shadow: 0 0 0 3px rgba(232, 219, 193, 0.3);
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background-color: #E8DCC7;
+      color: #444;
+      transition: all 0.3s;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background-color: #DDCBAA;
+      transform: translateY(-1px);
+    }
+
+    body.dark button {
+      background-color: #C6A875;
+      color: #FFF;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #FFFFFF;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 10px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .task:hover {
+      transform: translateY(-2px);
+    }
+
+    body.dark .task {
+      background-color: #3B3B3B;
+    }
+
+    .task.completed span {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stats {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 15px;
+      color: #777;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #E8DCC7;
+      color: #FFF;
+      font-size: 20px;
+      border: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    body.dark .theme-toggle {
+      background-color: #C6A875;
+    }
+
+    .clear-btn {
+      margin-top: 12px;
+      display: block;
+      width: 100%;
+      background-color: #F6EBDC;
+    }
+
+    body.dark .clear-btn {
+      background-color: #4A3B2E;
+    }
+
+    .goal-section {
+      margin-top: 40px;
+      background-color: #FFF;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    body.dark .goal-section {
+      background-color: #3B3B3B;
+    }
+
+    .goal-section h2 {
+      font-weight: 400;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .goal-progress {
+      height: 12px;
+      background-color: #F0E8D8;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .goal-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #E8DCC7;
+      transition: width 0.5s ease;
+    }
+
+    body.dark .goal-fill {
+      background-color: #C6A875;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>My To-Do List 📝</h1>
+    <div class="input-section">
+      <input type="text" id="taskInput" placeholder="เพิ่มสิ่งที่ต้องทำ..." />
+      <button onclick="addTask()">เพิ่ม</button>
+    </div>
+    <div id="taskList"></div>
+    <button class="clear-btn" onclick="clearTasks()">ล้างรายการทั้งหมด</button>
+
+    <div class="goal-section">
+      <h2>🎯 เป้าหมายเดือนนี้</h2>
+      <div class="goal-progress">
+        <div class="goal-fill" id="goalFill"></div>
+      </div>
+      <p id="goalStatus">เริ่มเก็บสถิติ...</p>
+    </div>
+
+    <div class="stats" id="statsText">ยังไม่มีงานที่เสร็จสิ้น</div>
+  </div>
+
+  <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let darkMode = localStorage.getItem("theme") === "dark";
+
+    function renderTasks() {
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const div = document.createElement("div");
+        div.className = `task ${task.completed ? "completed" : ""}`;
+        div.innerHTML = `
+          <span onclick="toggleTask(${index})">${task.text}</span>
+          <div class="actions">
+            <button onclick="deleteTask(${index})">ลบ</button>
+          </div>`;
+        taskList.appendChild(div);
+      });
+      updateStats();
+    }
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value.trim();
+      if (text === "") return alert("กรุณากรอกงานก่อน");
+      tasks.push({ text, completed: false });
+      input.value = "";
+      saveTasks();
+      renderTasks();
+    }
+
+    function toggleTask(index) {
+      tasks[index].completed = !tasks[index].completed;
+      saveTasks();
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    }
+
+    function clearTasks() {
+      if (confirm("ต้องการล้างรายการทั้งหมดหรือไม่?")) {
+        tasks = [];
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function updateStats() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      document.getElementById("statsText").textContent = 
+        total > 0 ? `เสร็จแล้ว ${completed}/${total} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จสิ้น";
+
+      document.getElementById("goalFill").style.width = percent + "%";
+      document.getElementById("goalStatus").textContent = 
+        percent === 100 ? "🎉 บรรลุเป้าหมายแล้ว!" : `ความคืบหน้า ${percent}%`;
+    }
+
+    function toggleTheme() {
+      darkMode = !darkMode;
+      document.body.classList.toggle("dark", darkMode);
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
+      document.querySelector(".theme-toggle").textContent = darkMode ? "🌙" : "☀️";
+    }
+
+    function initTheme() {
+      document.body.classList.toggle("dark", darkMode);
+      document.querySelector(".theme-toggle").textContent = darkMode ? "🌙" : "☀️";
+    }
+
+    window.onload = () => {
+      initTheme();
+      renderTasks();
+    };
+  </script>
+</body>
+</html>
