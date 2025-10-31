@@ -186,6 +186,41 @@
       margin-top: -4px;
       color: #666;
     }
+    .task {
+  background-color: var(--bg);
+  ...
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* 🎯 จัดให้ปุ่มลบอยู่ท้ายกล่อง */
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ✅ ปุ่มลบวงกลมอยู่ท้ายกล่อง */
+.task button {
+  margin-left: auto; /* ดันปุ่มไปขวาสุด */
+  background-color: transparent;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.task button:hover {
+  background-color: var(--accent);
+  color: #fff;
+  transform: rotate(90deg) scale(1.1);
+}
   </style>
 </head>
 
