@@ -290,6 +290,41 @@ body.dark .progress-text {
   opacity: 0.9;
   transform: translateY(-1px);
 }
+    /* 📊 กราฟแนวโน้มรายสัปดาห์ */
+.weekly-chart {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.weekly-chart h3 {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.chart-line {
+  width: 100%;
+  height: 160px;
+  background: linear-gradient(to bottom, #fefaf4, #faf8f5);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px var(--shadow-light);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.bar {
+  width: 10%;
+  background-color: var(--accent);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+}
+
+.bar-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
   </style>
 </head>
 
@@ -315,7 +350,13 @@ body.dark .progress-text {
   </svg>
   <div class="progress-text" id="progressTextCircle">0%</div>
 </div>
-
+    
+    <!-- 📊 กราฟแนวโน้มรายสัปดาห์ -->
+<div class="weekly-chart">
+  <h3>แนวโน้มงานที่เสร็จในรอบ 7 วัน</h3>
+  <div class="chart-line" id="chartLine"></div>
+</div>
+    
     <!-- 🧮 กราฟเปอร์เซ็นต์ -->
     <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-text" id="progressText">ยังไม่มีงานที่เสร็จ</div>
@@ -360,40 +401,42 @@ body.dark .progress-text {
     let allTasks = [];
 
     // 📥 โหลดงานจาก Firestore
-    async function loadTasks() {
-      const snapshot = await getDocs(collection(db, "tasks"));
-      const list = document.getElementById("taskList");
-      list.innerHTML = "";
-      allTasks = [];
-      let workCount = 0, personalCount = 0, doneCount = 0;
+async function loadTasks() {
+  const snapshot = await getDocs(collection(db, "tasks"));
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+  allTasks = [];
+  let workCount = 0, personalCount = 0, doneCount = 0;
 
-      snapshot.forEach((docSnap) => {
-        const task = docSnap.data();
-        task.id = docSnap.id;
-        allTasks.push(task);
-        if (task.category === "work") workCount++;
-        if (task.category === "personal") personalCount++;
-        if (task.completed) doneCount++;
-      });
+  snapshot.forEach((docSnap) => {
+    const task = docSnap.data();
+    task.id = docSnap.id;
+    allTasks.push(task);
+    if (task.category === "work") workCount++;
+    if (task.category === "personal") personalCount++;
+    if (task.completed) doneCount++;
+  });
 
       // 🔢 อัปเดตตัวนับหมวด
-      const totalCount = allTasks.length;
-      document.getElementById("categoryCounts").textContent =
-        `รวมงาน: ${totalCount} · งาน: ${workCount} · ส่วนตัว: ${personalCount}`;
+  const totalCount = allTasks.length;
+  document.getElementById("categoryCounts").textContent =
+    `รวมงาน: ${totalCount} · งาน: ${workCount} · ส่วนตัว: ${personalCount}`;
+  
+       // 📊 อัปเดตเปอร์เซ็นต์กราฟวงกลม
+  const percent = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
+  document.getElementById("progressFill").style.width = percent + "%";
+  document.getElementById("progressText").textContent =
+    totalCount ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จ";
 
-      // 📊 อัปเดตกราฟเปอร์เซ็นต์
-      const percent = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
-      document.getElementById("progressFill").style.width = percent + "%";
-      document.getElementById("progressText").textContent =
-        totalCount ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จ";
-      
-      // 🎯 อัปเดตกริฟวงกลม
-const circle = document.querySelector(".progress-bar");
-const textCircle = document.getElementById("progressTextCircle");
-const offset = 314 - (314 * percent) / 100; // คำนวณเส้นรอบวง
-circle.style.strokeDashoffset = offset;
-textCircle.textContent = percent + "%";
+  const circle = document.querySelector(".progress-bar");
+  const textCircle = document.getElementById("progressTextCircle");
+  const offset = 314 - (314 * percent) / 100;
+  circle.style.strokeDashoffset = offset;
+  textCircle.textContent = percent + "%";
 
+  // 📊 อัปเดตกริฟแนวโน้มรายสัปดาห์ (เพิ่มบรรทัดนี้)
+  updateWeeklyChart();
+}
 
       // 🗂️ แสดงงานตามหมวด
       allTasks
@@ -424,7 +467,8 @@ textCircle.textContent = percent + "%";
       const text = input.value.trim();
       if (!text) return alert("กรุณาพิมพ์งานก่อน");
       await addDoc(collection(db, "tasks"), {
-        text, category, completed: false, createdAt: new Date()
+        text, category, completed: false,createdAt: new Date().toISOString()
+
       });
       input.value = "";
       loadTasks();
@@ -447,9 +491,7 @@ async function deleteTask(id) {
     }, 400); // หน่วงเวลาให้แอนิเมชันจบก่อน
   }
 }
-;
-    }
-
+    
     // ❌ ล้างทั้งหมด
     async function clearTasks() {
       if (!confirm("ต้องการล้างรายการทั้งหมดหรือไม่?")) return;
@@ -483,7 +525,56 @@ async function deleteTask(id) {
     window.toggleTheme = toggleTheme;
 
     // 🚀 โหลดข้อมูลงานเมื่อเปิดเว็บ
-    window.onload = loadTasks;
+window.onload = () => {
+  loadTasks();           // โหลดงานจาก Firestore
+  updateWeeklyChart();   // 📊 อัปเดตกริฟแนวโน้มรายสัปดาห์หลังโหลด
+};
+    
+    // 📊 ฟังก์ชันอัปเดตกราฟรายสัปดาห์
+function updateWeeklyChart() {
+  const chart = document.getElementById("chartLine");
+  if (!chart) return;
+
+  // สร้างข้อมูลวันที่ 7 วันย้อนหลัง
+  const today = new Date();
+  const days = [...Array(7)].map((_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - (6 - i));
+    return d.toISOString().slice(0, 10);
+  });
+
+  // นับจำนวนงานที่เสร็จแต่ละวัน
+  const data = days.map(day => {
+    return allTasks.filter(t => {
+      if (!t.completed) return false;
+      const dateStr = (t.createdAt && t.createdAt.slice) ? t.createdAt.slice(0, 10) : "";
+      return dateStr === day;
+    }).length;
+  });
+
+  // แสดงกราฟ
+  chart.innerHTML = "";
+  const maxVal = Math.max(...data, 1);
+  days.forEach((day, i) => {
+    const bar = document.createElement("div");
+    bar.className = "bar";
+    bar.style.height = `${(data[i] / maxVal) * 100}%`;
+
+    const container = document.createElement("div");
+    container.style.display = "flex";
+    container.style.flexDirection = "column";
+    container.style.alignItems = "center";
+
+    const label = document.createElement("div");
+    label.className = "bar-label";
+    const date = new Date(day);
+    label.textContent = date.toLocaleDateString("th-TH", { weekday: "short" });
+
+    container.appendChild(bar);
+    container.appendChild(label);
+    chart.appendChild(container);
+  });
+}
   </script>
 </body>
 </html>
