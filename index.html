@@ -145,6 +145,12 @@
         document.body.classList.contains("dark") ? "🌙" : "☀️";
     }
 
+    // ✅ ให้ HTML เข้าถึงฟังก์ชันเหล่านี้ได้
+    window.addTask = addTask;
+    window.deleteTask = deleteTask;
+    window.toggleTask = toggleTask;
+    window.clearTasks = clearTasks;
+
     window.onload = loadTasks;
   </script>
 </body>
