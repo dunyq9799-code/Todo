@@ -42,7 +42,23 @@
       gap: 8px;
       margin-bottom: 18px;
     }
+/* ✨ ปุ่ม "เพิ่ม" ให้เข้ากับธีมทองอ่อน */
+.input-section button {
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
+.input-section button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+    
     input[type="text"], select {
       flex: 1; padding: 12px 14px;
       border-radius: 10px; border: 1px solid #ddd;
@@ -417,62 +433,80 @@ async function loadTasks() {
     if (task.completed) doneCount++;
   });
 
-      // 🔢 อัปเดตตัวนับหมวด
+  // 🔢 อัปเดตตัวนับหมวด
   const totalCount = allTasks.length;
   document.getElementById("categoryCounts").textContent =
     `รวมงาน: ${totalCount} · งาน: ${workCount} · ส่วนตัว: ${personalCount}`;
-  
-       // 📊 อัปเดตเปอร์เซ็นต์กราฟวงกลม
+
+  // 📊 อัปเดตเปอร์เซ็นต์ความสำเร็จ
   const percent = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
   document.getElementById("progressFill").style.width = percent + "%";
   document.getElementById("progressText").textContent =
-    totalCount ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จ";
+    totalCount
+      ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)`
+      : "ยังไม่มีงานที่เสร็จ";
 
+  // 🔄 อัปเดตกริฟวงกลม
   const circle = document.querySelector(".progress-bar");
   const textCircle = document.getElementById("progressTextCircle");
   const offset = 314 - (314 * percent) / 100;
   circle.style.strokeDashoffset = offset;
   textCircle.textContent = percent + "%";
 
-  // 📊 อัปเดตกริฟแนวโน้มรายสัปดาห์ (เพิ่มบรรทัดนี้)
+  // 🗂️ แสดงรายการงาน
+  allTasks
+    .filter(t => currentCategory === 'all' || t.category === currentCategory)
+    .forEach(task => {
+      const date = task.createdAt
+        ? new Date(
+            typeof task.createdAt === "number"
+              ? task.createdAt
+              : Date.parse(task.createdAt)
+          ).toLocaleDateString("th-TH")
+        : "-";
+
+      const div = document.createElement("div");
+      div.className = `task ${task.completed ? "completed" : ""}`;
+      div.innerHTML = `
+        <label style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" ${task.completed ? "checked" : ""} 
+            onchange="toggleTask('${task.id}', this.checked)" />
+          <div>
+            <span>${task.text}</span>
+            <small>สร้างเมื่อ: ${date}</small>
+          </div>
+        </label>
+        <button onclick="deleteTask('${task.id}')" title="ลบงาน">✖️</button>
+      `;
+      list.appendChild(div);
+    });
+
+  // 📊 อัปเดตกริฟแนวโน้มรายสัปดาห์
   updateWeeklyChart();
 }
-
-      // 🗂️ แสดงงานตามหมวด
-allTasks
-  .filter(t => currentCategory === 'all' || t.category === currentCategory)
-  .forEach(task => {
-    const date = task.createdAt
-      ? new Date(task.createdAt).toLocaleDateString("th-TH")
-      : "-";
-    const div = document.createElement("div");
-    div.className = `task ${task.completed ? "completed" : ""}`;
-    div.innerHTML = `
-      <label style="display:flex;align-items:center;gap:8px;">
-        <input type="checkbox" ${task.completed ? "checked" : ""} 
-          onchange="toggleTask('${task.id}', this.checked)" />
-        <div>
-          <span>${task.text}</span>
-          <small>สร้างเมื่อ: ${date}</small>
-        </div>
-      </label>
-      <button onclick="deleteTask('${task.id}')" title="ลบงาน">✖️</button>
-    `;
-    list.appendChild(div);
-  });
 }
-    // ➕ เพิ่มงานใหม่
-    async function addTask() {
-      const input = document.getElementById("taskInput");
-      const category = document.getElementById("categorySelect").value;
-      const text = input.value.trim();
-      if (!text) return alert("กรุณาพิมพ์งานก่อน");
-      await addDoc(collection(db, "tasks"), {
-        text, category, completed: false,createdAt: new Date().toISOString()
+    // ➕ เพิ่มงานใหม่ (แก้บั๊กเพิ่มไม่ได้)
+async function addTask() {
+  const input = document.getElementById("taskInput");
+  const category = document.getElementById("categorySelect").value;
+  const text = input.value.trim();
+  if (!text) return alert("กรุณาพิมพ์งานก่อน");
 
-      });
-      input.value = "";
-      loadTasks();
+  try {
+    await addDoc(collection(db, "tasks"), {
+      text: text,
+      category: category,
+      completed: false,
+      createdAt: new Date().getTime() // ✅ เก็บเป็นตัวเลข timestamp แทน (อ่านง่ายทุกเบราว์เซอร์)
+    });
+    input.value = "";
+    loadTasks(); // โหลดงานใหม่หลังเพิ่มสำเร็จ
+  } catch (error) {
+    console.error("เพิ่มงานล้มเหลว:", error);
+    alert("ไม่สามารถเพิ่มงานได้ กรุณารีเฟรชหน้าเว็บแล้วลองอีกครั้ง");
+  }
+}
+;
     }
 
     // ☑️ ติ๊กงาน
