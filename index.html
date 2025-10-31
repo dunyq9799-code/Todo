@@ -221,6 +221,75 @@
   color: #fff;
   transform: rotate(90deg) scale(1.1);
 }
+    /* 🎨 เอฟเฟกต์เฟดหายเมื่อกดลบงาน */
+.task.fade-out {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}/* 🟡 กราฟเปอร์เซ็นต์แบบวงกลม */
+.progress-circle {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 30px auto;
+}
+
+.progress-circle svg {
+  transform: rotate(-90deg);
+  width: 120px;
+  height: 120px;
+}
+
+.progress-circle circle {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.progress-bg {
+  stroke: #e8e4dc; /* สีพื้นหลังของกราฟ */
+}
+
+.progress-bar {
+  stroke: var(--accent); /* สีทองอ่อนของกราฟ */
+  stroke-dasharray: 314; /* เส้นรอบวง (คงที่) */
+  stroke-dashoffset: 314; /* จะถูกปรับด้วย JS */
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+body.dark .progress-text {
+  color: var(--text-light);
+}
+
+/* ✨ ปุ่ม “ล้างทั้งหมด” ให้เป็นสีทองอ่อน */
+.clear-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background-color: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
   </style>
 </head>
 
@@ -237,6 +306,15 @@
 
     <!-- 🔢 จำนวนงานแต่ละหมวด -->
     <div class="counts" id="categoryCounts">รวมงาน: 0 · งาน: 0 · ส่วนตัว: 0</div>
+    
+<!-- 🟡 กราฟเปอร์เซ็นต์แบบวงกลม -->
+<div class="progress-circle">
+  <svg>
+    <circle class="progress-bg" cx="60" cy="60" r="50"></circle>
+    <circle class="progress-bar" cx="60" cy="60" r="50"></circle>
+  </svg>
+  <div class="progress-text" id="progressTextCircle">0%</div>
+</div>
 
     <!-- 🧮 กราฟเปอร์เซ็นต์ -->
     <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
@@ -308,6 +386,14 @@
       document.getElementById("progressFill").style.width = percent + "%";
       document.getElementById("progressText").textContent =
         totalCount ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จ";
+      
+      // 🎯 อัปเดตกริฟวงกลม
+const circle = document.querySelector(".progress-bar");
+const textCircle = document.getElementById("progressTextCircle");
+const offset = 314 - (314 * percent) / 100; // คำนวณเส้นรอบวง
+circle.style.strokeDashoffset = offset;
+textCircle.textContent = percent + "%";
+
 
       // 🗂️ แสดงงานตามหมวด
       allTasks
@@ -350,10 +436,18 @@
       loadTasks();
     }
 
-    // 🗑️ ลบงาน
-    async function deleteTask(id) {
-      await deleteDoc(doc(db, "tasks", id));
-      loadTasks();
+    // 🗑️ ลบงานพร้อมเอฟเฟกต์เฟดหาย
+async function deleteTask(id) {
+  const taskElement = event.target.closest(".task"); // หา div ของงานที่ถูกลบ
+  if (taskElement) {
+    taskElement.classList.add("fade-out"); // เพิ่มคลาสเพื่อให้เกิดแอนิเมชัน
+    setTimeout(async () => {
+      await deleteDoc(doc(db, "tasks", id)); // ลบจากฐานข้อมูล
+      loadTasks(); // โหลดรายการใหม่หลังแอนิเมชันจบ
+    }, 400); // หน่วงเวลาให้แอนิเมชันจบก่อน
+  }
+}
+;
     }
 
     // ❌ ล้างทั้งหมด
