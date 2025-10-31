@@ -67,17 +67,106 @@
 
   <!-- Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+  // ✅ Import Firebase SDK (แบบ official เสถียร)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+  import { 
+    getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc 
+  } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB_7tyj_BAyFzKEYVrZXfQjWCUXGS7VqKY",
-      authDomain: "my-todo-list-9d2fa.firebaseapp.com",
-      projectId: "my-todo-list-9d2fa",
-      storageBucket: "my-todo-list-9d2fa.appspot.com",
-      messagingSenderId: "631403892452",
-      appId: "1:631403892452:web:66d382bf5f143fc05de6f1"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_7tyj_BAyFzKEYVrZXfQjWCUXGS7VqKY",
+    authDomain: "my-todo-list-9d2fa.firebaseapp.com",
+    projectId: "my-todo-list-9d2fa",
+    storageBucket: "my-todo-list-9d2fa.appspot.com",
+    messagingSenderId: "631403892452",
+    appId: "1:631403892452:web:66d382bf5f143fc05de6f1"
+  };
+
+  // ✅ เริ่มเชื่อม Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ✅ โหลดงานจาก Firestore
+  async function loadTasks() {
+    const snapshot = await getDocs(collection(db, "tasks"));
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+    let completed = 0;
+    snapshot.forEach((docSnap) => {
+      const task = docSnap.data();
+      const div = document.createElement("div");
+      div.className = `task ${task.completed ? "completed" : ""}`;
+      div.innerHTML = `
+        <span onclick="toggleTask('${docSnap.id}', ${!task.completed})">${task.text}</span>
+        <button onclick="deleteTask('${docSnap.id}')">ลบ</button>`;
+      list.appendChild(div);
+      if (task.completed) completed++;
+    });
+    updateStats(snapshot.size, completed);
+  }
+
+  // ✅ เพิ่มงานใหม่
+  async function addTask() {
+    const input = document.getElementById("taskInput");
+    const text = input.value.trim();
+    if (!text) return alert("กรุณากรอกงานก่อน");
+    await addDoc(collection(db, "tasks"), {
+      text,
+      completed: false,
+      createdAt: new Date()
+    });
+    input.value = "";
+    loadTasks();
+  }
+
+  // ✅ ติ๊กงานสำเร็จ
+  async function toggleTask(id, completed) {
+    await updateDoc(doc(db, "tasks", id), { completed });
+    loadTasks();
+  }
+
+  // ✅ ลบงาน
+  async function deleteTask(id) {
+    await deleteDoc(doc(db, "tasks", id));
+    loadTasks();
+  }
+
+  // ✅ ล้างทั้งหมด
+  async function clearTasks() {
+    if (!confirm("ต้องการล้างรายการทั้งหมดหรือไม่?")) return;
+    const snapshot = await getDocs(collection(db, "tasks"));
+    for (const docSnap of snapshot.docs) {
+      await deleteDoc(doc(db, "tasks", docSnap.id));
+    }
+    loadTasks();
+  }
+
+  // ✅ อัปเดตสถิติ
+  function updateStats(total, completed) {
+    const percent = total ? Math.round((completed / total) * 100) : 0;
+    document.getElementById("statsText").textContent =
+      total ? `เสร็จแล้ว ${completed}/${total} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จสิ้น";
+    document.getElementById("goalFill").style.width = percent + "%";
+    document.getElementById("goalStatus").textContent =
+      percent === 100 ? "🎉 บรรลุเป้าหมายแล้ว!" : `ความคืบหน้า ${percent}%`;
+  }
+
+  // ✅ ธีมกลางวัน/กลางคืน
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    document.querySelector(".theme-toggle").textContent =
+      document.body.classList.contains("dark") ? "🌙" : "☀️";
+  }
+
+  // ✅ ให้ HTML เรียกใช้ได้
+  window.addTask = addTask;
+  window.deleteTask = deleteTask;
+  window.toggleTask = toggleTask;
+  window.clearTasks = clearTasks;
+  window.toggleTheme = toggleTheme;
+
+  window.onload = loadTasks;
+</script>
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
