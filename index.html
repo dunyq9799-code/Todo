@@ -56,15 +56,26 @@
     }
 
     /* ปุ่ม */
-    button {
-      padding: 12px 18px;
-      border: none; border-radius: 10px;
-      cursor: pointer;
-      background-color: var(--accent);
-      color: #fff;
-      transition: all 0.3s;
-    }
-    button:hover { opacity: 0.85; transform: translateY(-1px); }
+    /* 🎯 ปุ่มลบใหม่ (วงกลมพร้อมไอคอนกากบาท) */
+.task button {
+  background-color: transparent; /* โปร่งใส เพื่อโชว์พื้นหลังกล่อง */
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.task button:hover {
+  background-color: var(--accent);
+  color: #fff;
+  transform: rotate(90deg) scale(1.1);
+}
 
     /* กล่องของงาน */
     .task {
@@ -279,7 +290,8 @@
                 <small>สร้างเมื่อ: ${date}</small>
               </div>
             </label>
-            <button onclick="deleteTask('${task.id}')">ลบ</button>`;
+            <button onclick="deleteTask('${task.id}')" title="ลบงาน">✖️</button>
+`;
           list.appendChild(div);
         });
     }
