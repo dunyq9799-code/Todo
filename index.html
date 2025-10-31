@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My To-Do List</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -14,179 +14,33 @@
       padding: 0;
       transition: background 0.4s, color 0.3s;
     }
-
-    body.dark {
-      background-color: #2F2F2F;
-      color: #F9F9F9;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 40px 20px 100px;
-    }
-
-    h1 {
-      text-align: center;
-      font-weight: 400;
-      color: #555;
-      margin-bottom: 24px;
-    }
-
-    body.dark h1 {
-      color: #FFF;
-    }
-
-    .input-section {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
+    body.dark { background-color: #2F2F2F; color: #F9F9F9; }
+    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px 100px; }
+    h1 { text-align: center; font-weight: 400; margin-bottom: 24px; }
     input[type="text"] {
-      flex: 1;
-      padding: 12px 16px;
-      border: 1px solid #E5DFD3;
-      border-radius: 12px;
-      background-color: #FFFDF8;
-      font-size: 16px;
-      transition: all 0.3s;
+      flex: 1; padding: 12px 16px; border: 1px solid #E5DFD3;
+      border-radius: 12px; background-color: #FFFDF8; font-size: 16px;
     }
-
-    input[type="text"]:focus {
-      outline: none;
-      border-color: #D8CBAF;
-      box-shadow: 0 0 0 3px rgba(232, 219, 193, 0.3);
-    }
-
+    .input-section { display: flex; gap: 8px; margin-bottom: 24px; }
     button {
-      padding: 12px 18px;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      background-color: #E8DCC7;
-      color: #444;
-      transition: all 0.3s;
-      font-size: 15px;
+      padding: 12px 18px; border: none; border-radius: 12px;
+      cursor: pointer; background-color: #E8DCC7; color: #444; transition: all 0.3s;
     }
-
-    button:hover {
-      background-color: #DDCBAA;
-      transform: translateY(-1px);
+    button:hover { background-color: #DDCBAA; transform: translateY(-1px); }
+    .task { display: flex; align-items: center; justify-content: space-between;
+      background-color: #fff; border-radius: 12px; padding: 12px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 10px;
     }
-
-    body.dark button {
-      background-color: #C6A875;
-      color: #FFF;
-    }
-
-    .task {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #FFFFFF;
-      border-radius: 12px;
-      padding: 12px 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      margin-bottom: 10px;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    .task:hover {
-      transform: translateY(-2px);
-    }
-
-    body.dark .task {
-      background-color: #3B3B3B;
-    }
-
-    .task.completed span {
-      text-decoration: line-through;
-      color: #999;
-    }
-
-    .actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .stats {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 15px;
-      color: #777;
-    }
-
+    .task.completed span { text-decoration: line-through; color: #999; }
     .theme-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: #E8DCC7;
-      color: #FFF;
-      font-size: 20px;
-      border: none;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-      cursor: pointer;
-      transition: all 0.3s;
+      position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+      border-radius: 50%; background-color: #E8DCC7; border: none; font-size: 22px;
     }
-
-    .theme-toggle:hover {
-      transform: scale(1.1);
-    }
-
-    body.dark .theme-toggle {
-      background-color: #C6A875;
-    }
-
-    .clear-btn {
-      margin-top: 12px;
-      display: block;
-      width: 100%;
-      background-color: #F6EBDC;
-    }
-
-    body.dark .clear-btn {
-      background-color: #4A3B2E;
-    }
-
-    .goal-section {
-      margin-top: 40px;
-      background-color: #FFF;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    body.dark .goal-section {
-      background-color: #3B3B3B;
-    }
-
-    .goal-section h2 {
-      font-weight: 400;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .goal-progress {
-      height: 12px;
-      background-color: #F0E8D8;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .goal-fill {
-      height: 100%;
-      width: 0%;
-      background-color: #E8DCC7;
-      transition: width 0.5s ease;
-    }
-
-    body.dark .goal-fill {
-      background-color: #C6A875;
-    }
+    .clear-btn { margin-top: 12px; width: 100%; background-color: #F6EBDC; }
+    .stats { margin-top: 30px; text-align: center; font-size: 15px; color: #777; }
+    .goal-section { margin-top: 40px; background-color: #FFF; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .goal-progress { height: 12px; background-color: #F0E8D8; border-radius: 8px; overflow: hidden; }
+    .goal-fill { height: 100%; width: 0%; background-color: #E8DCC7; transition: width 0.5s ease; }
   </style>
 </head>
 
@@ -202,9 +56,7 @@
 
     <div class="goal-section">
       <h2>🎯 เป้าหมายเดือนนี้</h2>
-      <div class="goal-progress">
-        <div class="goal-fill" id="goalFill"></div>
-      </div>
+      <div class="goal-progress"><div class="goal-fill" id="goalFill"></div></div>
       <p id="goalStatus">เริ่มเก็บสถิติ...</p>
     </div>
 
@@ -213,89 +65,87 @@
 
   <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
 
-  <script>
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    let darkMode = localStorage.getItem("theme") === "dark";
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    function renderTasks() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_7tyj_BAyFzKEYVrZXfQjWCUXGS7VqKY",
+      authDomain: "my-todo-list-9d2fa.firebaseapp.com",
+      projectId: "my-todo-list-9d2fa",
+      storageBucket: "my-todo-list-9d2fa.firebasestorage.app",
+      messagingSenderId: "631403892452",
+      appId: "1:631403892452:web:66d382bf5f143fc05de6f1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadTasks() {
+      const querySnapshot = await getDocs(collection(db, "tasks"));
       const taskList = document.getElementById("taskList");
       taskList.innerHTML = "";
-      tasks.forEach((task, index) => {
+      let completed = 0;
+      querySnapshot.forEach((d) => {
+        const task = d.data();
         const div = document.createElement("div");
         div.className = `task ${task.completed ? "completed" : ""}`;
         div.innerHTML = `
-          <span onclick="toggleTask(${index})">${task.text}</span>
-          <div class="actions">
-            <button onclick="deleteTask(${index})">ลบ</button>
-          </div>`;
+          <span onclick="toggleTask('${d.id}', ${!task.completed})">${task.text}</span>
+          <button onclick="deleteTask('${d.id}')">ลบ</button>`;
         taskList.appendChild(div);
+        if (task.completed) completed++;
       });
-      updateStats();
+      updateStats(querySnapshot.size, completed);
     }
 
-    function addTask() {
+    async function addTask() {
       const input = document.getElementById("taskInput");
       const text = input.value.trim();
-      if (text === "") return alert("กรุณากรอกงานก่อน");
-      tasks.push({ text, completed: false });
+      if (!text) return alert("กรุณากรอกงานก่อน");
+      await addDoc(collection(db, "tasks"), {
+        text,
+        completed: false,
+        createdAt: new Date()
+      });
       input.value = "";
-      saveTasks();
-      renderTasks();
+      loadTasks();
     }
 
-    function toggleTask(index) {
-      tasks[index].completed = !tasks[index].completed;
-      saveTasks();
-      renderTasks();
+    async function toggleTask(id, completed) {
+      await updateDoc(doc(db, "tasks", id), { completed });
+      loadTasks();
     }
 
-    function deleteTask(index) {
-      tasks.splice(index, 1);
-      saveTasks();
-      renderTasks();
+    async function deleteTask(id) {
+      await deleteDoc(doc(db, "tasks", id));
+      loadTasks();
     }
 
-    function clearTasks() {
-      if (confirm("ต้องการล้างรายการทั้งหมดหรือไม่?")) {
-        tasks = [];
-        saveTasks();
-        renderTasks();
-      }
+    async function clearTasks() {
+      if (!confirm("ต้องการล้างรายการทั้งหมดหรือไม่?")) return;
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+      for (const d of querySnapshot.docs) await deleteDoc(doc(db, "tasks", d.id));
+      loadTasks();
     }
 
-    function saveTasks() {
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-    }
-
-    function updateStats() {
-      const total = tasks.length;
-      const completed = tasks.filter(t => t.completed).length;
-      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-      document.getElementById("statsText").textContent = 
-        total > 0 ? `เสร็จแล้ว ${completed}/${total} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จสิ้น";
-
+    function updateStats(total, completed) {
+      const percent = total ? Math.round((completed / total) * 100) : 0;
+      document.getElementById("statsText").textContent =
+        total ? `เสร็จแล้ว ${completed}/${total} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จสิ้น";
       document.getElementById("goalFill").style.width = percent + "%";
-      document.getElementById("goalStatus").textContent = 
+      document.getElementById("goalStatus").textContent =
         percent === 100 ? "🎉 บรรลุเป้าหมายแล้ว!" : `ความคืบหน้า ${percent}%`;
     }
 
     function toggleTheme() {
-      darkMode = !darkMode;
-      document.body.classList.toggle("dark", darkMode);
-      localStorage.setItem("theme", darkMode ? "dark" : "light");
-      document.querySelector(".theme-toggle").textContent = darkMode ? "🌙" : "☀️";
+      document.body.classList.toggle("dark");
+      document.querySelector(".theme-toggle").textContent =
+        document.body.classList.contains("dark") ? "🌙" : "☀️";
     }
 
-    function initTheme() {
-      document.body.classList.toggle("dark", darkMode);
-      document.querySelector(".theme-toggle").textContent = darkMode ? "🌙" : "☀️";
-    }
-
-    window.onload = () => {
-      initTheme();
-      renderTasks();
-    };
+    window.onload = loadTasks;
   </script>
 </body>
 </html>
