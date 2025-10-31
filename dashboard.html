@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - สรุปงานทั้งหมด</title>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet" />
+
   <style>
     :root {
       --cream-bg: #faf8f5;
@@ -26,94 +27,189 @@
       padding: 20px;
     }
 
-    body.dark { background: var(--dark-bg); color: var(--text-light); }
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--text-light);
+    }
 
-    h1 { font-weight: 500; margin-bottom: 20px; }
+    h1 {
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
 
-    /* กราฟวงกลม */
+    /* ปุ่มกลับหน้า To-Do */
+    .back-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.1);
+    }
+
+    /* 🟡 กราฟเปอร์เซ็นต์วงกลม */
     .progress-circle {
       position: relative;
-      width: 140px;
-      height: 140px;
+      width: 180px;
+      height: 180px;
       margin: 30px auto;
     }
+
     .progress-circle svg {
       transform: rotate(-90deg);
-      width: 140px;
-      height: 140px;
+      width: 180px;
+      height: 180px;
     }
+
     .progress-circle circle {
       fill: none;
-      stroke-width: 12;
+      stroke-width: 14;
       stroke-linecap: round;
     }
-    .progress-bg { stroke: #e8e4dc; }
+
+    .progress-bg {
+      stroke: #e8e4dc;
+    }
+
     .progress-bar {
       stroke: var(--accent);
       stroke-dasharray: 440;
       stroke-dashoffset: 440;
       transition: stroke-dashoffset 1s ease;
     }
+
     .progress-text {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 600;
       color: var(--text-dark);
     }
-    body.dark .progress-text { color: var(--text-light); }
 
-    /* ปุ่มกลับ */
-    .back-btn {
-      margin-top: 30px;
-      padding: 12px 22px;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
+    body.dark .progress-text {
+      color: var(--text-light);
     }
-    .back-btn:hover { background: var(--accent-hover); }
 
-    /* แนวโน้มรายสัปดาห์ */
+    /* 📊 กราฟแนวโน้มรายสัปดาห์ */
     .chart-line {
       width: 100%;
-      height: 160px;
+      height: 180px;
       background: linear-gradient(to bottom, #fefaf4, #faf8f5);
       border-radius: 12px;
       display: flex;
       align-items: flex-end;
       justify-content: space-around;
       padding: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
     body.dark .chart-line {
       background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
     }
-    .bar { width: 10%; background-color: var(--accent); border-radius: 4px 4px 0 0; transition: height 0.5s ease; }
-    .bar-label { font-size: 12px; color: #666; margin-top: 5px; }
-    body.dark .bar-label { color: #ccc; }
+
+    .bar {
+      width: 10%;
+      background-color: var(--accent);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s ease;
+    }
+
+    .bar-label {
+      font-size: 13px;
+      margin-top: 5px;
+      color: #666;
+    }
+
+    body.dark .bar-label {
+      color: #ccc;
+    }
+
+    /* 🧮 กล่องสรุป */
+    .summary-box {
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      text-align: left;
+    }
+
+    body.dark .summary-box {
+      background: var(--dark-card);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 15px;
+    }
+
+    body.dark .summary-item {
+      border-color: #333;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.4em; }
+      .progress-circle {
+        width: 140px;
+        height: 140px;
+      }
+      .progress-circle svg {
+        width: 140px;
+        height: 140px;
+      }
+      .summary-box { font-size: 14px; padding: 15px; }
+    }
   </style>
 </head>
 
 <body>
   <h1>📊 สรุปภาพรวมงานทั้งหมด</h1>
 
+  <!-- กราฟเปอร์เซ็นต์ -->
   <div class="progress-circle">
     <svg>
-      <circle class="progress-bg" cx="70" cy="70" r="70"></circle>
-      <circle class="progress-bar" cx="70" cy="70" r="70"></circle>
+      <circle class="progress-bg" cx="90" cy="90" r="70"></circle>
+      <circle class="progress-bar" cx="90" cy="90" r="70"></circle>
     </svg>
     <div class="progress-text" id="progressTextCircle">0%</div>
+  </div>
+
+  <!-- สรุปงานทั้งหมด -->
+  <div class="summary-box" id="summaryBox">
+    <div class="summary-item"><span>รวมงานทั้งหมด</span><strong>0</strong></div>
+    <div class="summary-item"><span>งานที่เสร็จแล้ว</span><strong>0</strong></div>
+    <div class="summary-item"><span>งานที่ยังไม่เสร็จ</span><strong>0</strong></div>
+    <div class="summary-item"><span>งานหมวด “งาน”</span><strong>0</strong></div>
+    <div class="summary-item"><span>งานหมวด “ส่วนตัว”</span><strong>0</strong></div>
   </div>
 
   <h3>แนวโน้มงานที่เสร็จในรอบ 7 วัน</h3>
   <div class="chart-line" id="chartLine"></div>
 
-  <button class="back-btn" onclick="window.location.href='index.html'">⬅️ กลับหน้า To-Do</button>
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅️</button>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
@@ -126,25 +222,46 @@
     });
     const db = getFirestore(app);
 
+    // 🌗 ใช้ธีมเดียวกับหน้าแรก
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+    }
+
+    // 📊 โหลดข้อมูล
     async function loadSummary() {
       const snapshot = await getDocs(collection(db, "tasks"));
       const tasks = [];
-      let done = 0;
+      let done = 0, work = 0, personal = 0;
+
       snapshot.forEach(doc => {
         const data = doc.data();
         tasks.push(data);
         if (data.completed) done++;
+        if (data.category === "work") work++;
+        if (data.category === "personal") personal++;
       });
 
       const total = tasks.length;
       const percent = total ? Math.round((done / total) * 100) : 0;
+      const remain = total - done;
 
+      // วงกลมเปอร์เซ็นต์
       const circle = document.querySelector(".progress-bar");
       const offset = 440 - (440 * percent) / 100;
       circle.style.strokeDashoffset = offset;
       document.getElementById("progressTextCircle").textContent = percent + "%";
 
-      // weekly trend
+      // สรุปงาน
+      const summaryBox = document.getElementById("summaryBox");
+      summaryBox.innerHTML = `
+        <div class="summary-item"><span>รวมงานทั้งหมด</span><strong>${total}</strong></div>
+        <div class="summary-item"><span>งานที่เสร็จแล้ว</span><strong>${done}</strong></div>
+        <div class="summary-item"><span>งานที่ยังไม่เสร็จ</span><strong>${remain}</strong></div>
+        <div class="summary-item"><span>งานหมวด “งาน”</span><strong>${work}</strong></div>
+        <div class="summary-item"><span>งานหมวด “ส่วนตัว”</span><strong>${personal}</strong></div>
+      `;
+
+      // 📈 กราฟแนวโน้มรายสัปดาห์
       const chart = document.getElementById("chartLine");
       const today = new Date();
       const days = [...Array(7)].map((_, i) => {
@@ -152,9 +269,11 @@
         d.setDate(today.getDate() - (6 - i));
         return d.toISOString().slice(0, 10);
       });
+
       const data = days.map(day =>
         tasks.filter(t => t.completed && new Date(t.createdAt).toISOString().slice(0, 10) === day).length
       );
+
       chart.innerHTML = "";
       const maxVal = Math.max(...data, 1);
       days.forEach((day, i) => {
