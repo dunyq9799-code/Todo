@@ -1,125 +1,245 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My To-Do List - รายการสิ่งที่ต้องทำ</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My To-Do List - มินิมอลมืออาชีพ</title>
 
   <!-- ฟอนต์ภาษาไทยแนวมินิมอล -->
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* ======== พื้นฐานของเว็บ ======== */
+    /* 🎨 ====== สีและโทนหลัก ====== */
+    :root {
+      --cream-bg: #faf8f5; /* พื้นหลังโทนครีมอุ่น */
+      --dark-bg: #1f1f1f;  /* พื้นหลังโหมดมืด */
+      --dark-card: #2a2a2a; /* กล่องในโหมดมืด */
+      --accent: #a5d6a7;    /* สีเขียวพาสเทลหลัก */
+      --text-dark: #444;
+      --text-light: #f5f5f5;
+      --shadow-light: rgba(0, 0, 0, 0.05);
+      --shadow-dark: rgba(0, 0, 0, 0.3);
+    }
+
+    /* 🧱 ====== พื้นฐานเว็บ ====== */
     body {
       font-family: 'Sarabun', sans-serif;
-      background-color: #FAF8F5;
-      color: #444;
+      background-color: var(--cream-bg);
+      color: var(--text-dark);
       margin: 0;
-      padding: 0;
-      transition: background 0.4s, color 0.3s;
+      transition: background 0.5s, color 0.3s;
     }
-    body.dark { background-color: #2F2F2F; color: #F9F9F9; }
 
-    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px 100px; }
-
-    h1 { text-align: center; font-weight: 400; margin-bottom: 24px; }
-
-    /* ======== กล่องกรอกข้อความ ======== */
-    input[type="text"] {
-      flex: 1; padding: 12px 16px; border: 1px solid #E5DFD3;
-      border-radius: 12px; background-color: #FFFDF8; font-size: 16px;
+    /* 🌙 โหมดมืด */
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
     }
-    .input-section { display: flex; gap: 8px; margin-bottom: 24px; }
 
-    /* ======== ปุ่มทั่วไป ======== */
+    /* 📦 โครงสร้างหลักของหน้า */
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 40px 20px 100px;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    /* 🔹 ส่วนกรอกข้อความและปุ่มเพิ่ม */
+    .input-section {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    input[type="text"], select {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background-color: #fffdf8;
+      font-size: 15px;
+    }
+
+    /* 🎭 โหมดมืดของอินพุต */
+    body.dark input, body.dark select {
+      background-color: var(--dark-card);
+      border-color: #444;
+      color: var(--text-light);
+    }
+
+    /* 🧩 ปุ่มต่าง ๆ */
     button {
-      padding: 12px 18px; border: none; border-radius: 12px;
-      cursor: pointer; background-color: #E8DCC7; color: #444; transition: all 0.3s;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #e8dcc7;
+      color: #444;
+      transition: all 0.3s;
     }
-    button:hover { background-color: #DDCBAA; transform: translateY(-1px); }
 
-    /* ======== กล่องของงานแต่ละรายการ ======== */
-    .task {
-      display: flex; align-items: center; justify-content: space-between;
-      background-color: #fff; border-radius: 12px; padding: 12px 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 10px;
+    button:hover {
+      background-color: #ddcbaa;
+      transform: translateY(-1px);
     }
+
+    body.dark button {
+      background-color: var(--accent);
+      color: #1a1a1a;
+    }
+
+    /* 🗂️ กล่องของแต่ละงาน */
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 8px var(--shadow-light);
+      margin-bottom: 8px;
+      transition: all 0.3s;
+    }
+
+    /* 🕶️ กล่องในโหมดมืด */
+    body.dark .task {
+      background-color: var(--dark-card);
+      box-shadow: 0 2px 8px var(--shadow-dark);
+    }
+
+    /* 📝 งานที่ติ๊กแล้ว (เสร็จ) */
     .task.completed span {
       text-decoration: line-through;
       color: #b5b5b5;
       opacity: 0.6;
-      transition: all 0.3s ease;
     }
-    .task span { cursor: pointer; transition: all 0.3s ease; }
-    .task span:hover { transform: scale(1.03); }
 
-    /* ======== ช่องติ๊ก (checkbox) ======== */
-    input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      accent-color: #A5D6A7; /* สีเขียวพาสเทลแบบญี่ปุ่น */
+    .task span {
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    input[type="checkbox"]:hover { transform: scale(1.1); }
 
-    /* ======== ปุ่มธีมกลางวัน/กลางคืน ======== */
+    /* ✅ กล่องติ๊กสีเขียวพาสเทล */
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* 🌗 ปุ่มเปลี่ยนธีม */
     .theme-toggle {
-      position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-      border-radius: 50%; background-color: #E8DCC7; border: none; font-size: 22px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
     }
 
-    .clear-btn { margin-top: 12px; width: 100%; background-color: #F6EBDC; }
-
-    /* ======== ส่วนสถิติและเป้าหมาย ======== */
-    .stats { margin-top: 30px; text-align: center; font-size: 15px; color: #777; }
-    .goal-section {
-      margin-top: 40px; background-color: #FFF; border-radius: 12px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    .theme-toggle:hover {
+      transform: scale(1.1);
     }
-    .goal-progress { height: 12px; background-color: #F0E8D8; border-radius: 8px; overflow: hidden; }
-    .goal-fill { height: 100%; width: 0%; background-color: #E8DCC7; transition: width 0.5s ease; }
+
+    /* 🧭 ปุ่มหมวดหมู่ */
+    .category-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .category-btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      background: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+
+    .category-btn.active {
+      background-color: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    body.dark .category-btn {
+      border-color: #555;
+      color: var(--text-light);
+    }
+
+    /* 🔢 ตัวนับจำนวนงานแต่ละหมวด */
+    .counts {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 20px;
+    }
+
+    body.dark .counts {
+      color: #ccc;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>📋 รายการสิ่งที่ต้องทำ (My To-Do List)</h1>
+    <h1>📋 To-Do List มินิมอล</h1>
 
-    <!-- ส่วนเพิ่มงาน -->
+    <!-- 🔹 ปุ่มเลือกหมวดหมู่ -->
+    <div class="category-bar">
+      <button class="category-btn active" onclick="filterCategory('all')">รวมงาน</button>
+      <button class="category-btn" onclick="filterCategory('work')">งาน</button>
+      <button class="category-btn" onclick="filterCategory('personal')">ส่วนตัว</button>
+    </div>
+
+    <!-- 🔹 แสดงจำนวนงานแต่ละหมวด -->
+    <div class="counts" id="categoryCounts">รวมงาน: 0 · งาน: 0 · ส่วนตัว: 0</div>
+
+    <!-- 🔹 ส่วนเพิ่มงานใหม่ -->
     <div class="input-section">
       <input type="text" id="taskInput" placeholder="พิมพ์สิ่งที่ต้องทำ..." />
+      <select id="categorySelect">
+        <option value="work">งาน</option>
+        <option value="personal">ส่วนตัว</option>
+      </select>
       <button onclick="addTask()">เพิ่ม</button>
     </div>
 
-    <!-- รายการงานทั้งหมด -->
+    <!-- 🔹 รายการงานทั้งหมด -->
     <div id="taskList"></div>
 
-    <!-- ปุ่มล้างรายการทั้งหมด -->
+    <!-- 🔹 ปุ่มล้างทั้งหมด -->
     <button class="clear-btn" onclick="clearTasks()">ล้างรายการทั้งหมด</button>
-
-    <!-- ส่วนแสดงเป้าหมาย -->
-    <div class="goal-section">
-      <h2>🎯 เป้าหมายเดือนนี้</h2>
-      <div class="goal-progress"><div class="goal-fill" id="goalFill"></div></div>
-      <p id="goalStatus">เริ่มเก็บสถิติ...</p>
-    </div>
-
-    <!-- สถิติการทำงาน -->
-    <div class="stats" id="statsText">ยังไม่มีงานที่เสร็จสิ้น</div>
   </div>
 
-  <!-- ปุ่มสลับธีม -->
+  <!-- 🌗 ปุ่มสลับโหมด -->
   <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
 
-  <!-- =============== โค้ด Firebase =============== -->
+  <!-- 🔧 ส่วนโค้ดเชื่อม Firebase -->
   <script type="module">
-    /* นำเข้าโมดูลที่ต้องใช้จาก Firebase */
+    // ====== นำเข้าโมดูลจาก Firebase ======
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } 
       from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    /* ตั้งค่าการเชื่อมต่อ Firebase ของคุณ */
+    // ====== การตั้งค่า Firebase ======
     const firebaseConfig = {
       apiKey: "AIzaSyB_7tyj_BAyFzKEYVrZXfQjWCUXGS7VqKY",
       authDomain: "my-todo-list-9d2fa.firebaseapp.com",
@@ -129,45 +249,61 @@
       appId: "1:631403892452:web:66d382bf5f143fc05de6f1"
     };
 
-    /* เริ่มต้นเชื่อม Firebase */
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* โหลดข้อมูลงานจาก Firestore */
+    let currentCategory = 'all'; // หมวดหมู่ที่กำลังแสดง
+    let allTasks = []; // งานทั้งหมด
+
+    // ====== โหลดข้อมูลงานจาก Firestore ======
     async function loadTasks() {
       const snapshot = await getDocs(collection(db, "tasks"));
       const list = document.getElementById("taskList");
       list.innerHTML = "";
-      let completed = 0;
+      allTasks = [];
+
+      // ตัวนับ
+      let workCount = 0, personalCount = 0;
 
       snapshot.forEach((docSnap) => {
         const task = docSnap.data();
-        const div = document.createElement("div");
-        div.className = `task ${task.completed ? "completed" : ""}`;
-
-        // แสดงงานแต่ละรายการ (มีช่องติ๊ก)
-        div.innerHTML = `
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" ${task.completed ? "checked" : ""} 
-              onchange="toggleTask('${docSnap.id}', this.checked)" />
-            <span>${task.text}</span>
-          </label>
-          <button onclick="deleteTask('${docSnap.id}')">ลบ</button>`;
-        
-        list.appendChild(div);
-        if (task.completed) completed++;
+        task.id = docSnap.id;
+        allTasks.push(task);
+        if (task.category === "work") workCount++;
+        if (task.category === "personal") personalCount++;
       });
 
-      updateStats(snapshot.size, completed);
+      // แสดงจำนวนงานแต่ละหมวด
+      const totalCount = allTasks.length;
+      document.getElementById("categoryCounts").textContent =
+        `รวมงาน: ${totalCount} · งาน: ${workCount} · ส่วนตัว: ${personalCount}`;
+
+      // แสดงเฉพาะหมวดที่เลือก
+      allTasks
+        .filter(t => currentCategory === 'all' || t.category === currentCategory)
+        .forEach(task => {
+          const div = document.createElement("div");
+          div.className = `task ${task.completed ? "completed" : ""}`;
+          div.innerHTML = `
+            <label style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" ${task.completed ? "checked" : ""} 
+                onchange="toggleTask('${task.id}', this.checked)" />
+              <span>${task.text} <small style="opacity:0.6;">(${task.category === 'work' ? 'งาน' : 'ส่วนตัว'})</small></span>
+            </label>
+            <button onclick="deleteTask('${task.id}')">ลบ</button>`;
+          list.appendChild(div);
+        });
     }
 
-    /* เพิ่มงานใหม่ */
+    // ====== เพิ่มงานใหม่ ======
     async function addTask() {
       const input = document.getElementById("taskInput");
+      const category = document.getElementById("categorySelect").value;
       const text = input.value.trim();
       if (!text) return alert("กรุณาพิมพ์งานก่อน");
       await addDoc(collection(db, "tasks"), {
         text,
+        category,
         completed: false,
         createdAt: new Date()
       });
@@ -175,19 +311,19 @@
       loadTasks();
     }
 
-    /* เปลี่ยนสถานะงาน (ติ๊ก/ยกเลิกติ๊ก) */
+    // ====== ติ๊ก/ยกเลิกงาน ======
     async function toggleTask(id, completed) {
       await updateDoc(doc(db, "tasks", id), { completed });
       loadTasks();
     }
 
-    /* ลบงาน */
+    // ====== ลบงาน ======
     async function deleteTask(id) {
       await deleteDoc(doc(db, "tasks", id));
       loadTasks();
     }
 
-    /* ล้างรายการทั้งหมด */
+    // ====== ล้างทั้งหมด ======
     async function clearTasks() {
       if (!confirm("ต้องการล้างรายการทั้งหมดหรือไม่?")) return;
       const snapshot = await getDocs(collection(db, "tasks"));
@@ -195,31 +331,31 @@
       loadTasks();
     }
 
-    /* อัปเดตสถิติ */
-    function updateStats(total, completed) {
-      const percent = total ? Math.round((completed / total) * 100) : 0;
-      document.getElementById("statsText").textContent =
-        total ? `เสร็จแล้ว ${completed}/${total} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จสิ้น";
-      document.getElementById("goalFill").style.width = percent + "%";
-      document.getElementById("goalStatus").textContent =
-        percent === 100 ? "🎉 บรรลุเป้าหมายแล้ว!" : `ความคืบหน้า ${percent}%`;
+    // ====== เลือกหมวดหมู่ ======
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+      const active = document.querySelector(`.category-btn[onclick*="${cat}"]`);
+      if (active) active.classList.add('active');
+      loadTasks();
     }
 
-    /* ธีมกลางวัน/กลางคืน */
+    // ====== เปลี่ยนโหมดกลางวัน/กลางคืน ======
     function toggleTheme() {
       document.body.classList.toggle("dark");
       document.querySelector(".theme-toggle").textContent =
         document.body.classList.contains("dark") ? "🌙" : "☀️";
     }
 
-    /* ทำให้ฟังก์ชันเรียกได้จาก HTML */
+    // ====== ทำให้ฟังก์ชันเรียกจาก HTML ได้ ======
     window.addTask = addTask;
     window.deleteTask = deleteTask;
     window.toggleTask = toggleTask;
     window.clearTasks = clearTasks;
+    window.filterCategory = filterCategory;
     window.toggleTheme = toggleTheme;
 
-    /* โหลดข้อมูลงานเมื่อเปิดเว็บ */
+    // ====== โหลดงานอัตโนมัติเมื่อเปิดเว็บ ======
     window.onload = loadTasks;
   </script>
 </body>
