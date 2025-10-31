@@ -5,40 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My To-Do List - มินิมอลมืออาชีพ</title>
 
-  <!-- ฟอนต์ภาษาไทยสไตล์มินิมอล -->
+  <!-- ฟอนต์ -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* 🎨 ====== โทนสีหลัก (สีทองอ่อนมินิมอล) ====== */
+    /* 🎨 โทนสีหลัก */
     :root {
       --cream-bg: #faf8f5;
-      --dark-bg: #1f1f1f;
-      --dark-card: #2a2a2a;
+      --dark-bg: #121212;
+      --dark-card: #1e1e1e;
       --accent: #e0c097;
-      --text-dark: #444;
-      --text-light: #f5f5f5;
-      --shadow-light: rgba(0, 0, 0, 0.05);
-      --shadow-dark: rgba(0, 0, 0, 0.3);
+      --accent-hover: #d6b17c;
+      --text-dark: #333;
+      --text-light: #f8f8f8;
+      --shadow-light: rgba(0, 0, 0, 0.08);
+      --shadow-dark: rgba(0, 0, 0, 0.4);
     }
 
-    /* 🧱 พื้นฐานเว็บ */
+    /* 🧱 พื้นฐาน */
     body {
       font-family: 'Sarabun', sans-serif;
       background-color: var(--cream-bg);
       color: var(--text-dark);
       margin: 0;
-      transition: background 0.5s, color 0.3s;
+      transition: background 0.4s ease, color 0.4s ease;
     }
-    body.dark { background-color: var(--dark-bg); color: var(--text-light); }
-    .container { max-width: 640px; margin: 0 auto; padding: 40px 20px 100px; }
 
-    h1 { text-align: center; font-weight: 500; margin-bottom: 20px; }
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+    }
 
-    /* ✏️ อินพุตและปุ่มเพิ่ม */
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px 100px;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    /* 🧩 ส่วนอินพุตและปุ่ม */
     .input-section {
       display: flex;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"], select {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background-color: #fffdf8;
+      font-size: 15px;
+      transition: all 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 6px rgba(224, 192, 151, 0.4);
+    }
+
+    body.dark input, body.dark select {
+      background-color: var(--dark-card);
+      border-color: #444;
+      color: var(--text-light);
     }
 
     .input-section button {
@@ -53,28 +89,47 @@
     }
 
     .input-section button:hover {
-      opacity: 0.9;
+      background-color: var(--accent-hover);
       transform: translateY(-1px);
     }
 
-    input[type="text"], select {
-      flex: 1;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      background-color: #fffdf8;
-      font-size: 15px;
+    /* 📦 กล่องงาน */
+    .task {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 2px 8px var(--shadow-light);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
     }
 
-    body.dark input, body.dark select {
+    body.dark .task {
       background-color: var(--dark-card);
-      border-color: #444;
-      color: var(--text-light);
+      box-shadow: 0 2px 6px var(--shadow-dark);
     }
 
-    /* 🎯 ปุ่มลบ (วงกลมพร้อมกากบาท) */
+    .task.completed span {
+      text-decoration: line-through;
+      color: #b5b5b5;
+      opacity: 0.6;
+    }
+
+    .task small {
+      display: block;
+      font-size: 12px;
+      color: #999;
+      margin-top: 3px;
+    }
+
+    body.dark .task small {
+      color: #aaa;
+    }
+
+    /* ปุ่มลบ */
     .task button {
-      margin-left: auto;
       background-color: transparent;
       border: 2px solid var(--accent);
       border-radius: 50%;
@@ -94,35 +149,15 @@
       transform: rotate(90deg) scale(1.1);
     }
 
-    /* 📦 กล่องงาน */
-    .task {
-      background-color: #fff;
-      border-radius: 12px;
-      padding: 10px 14px;
-      box-shadow: 0 2px 8px var(--shadow-light);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.3s;
+    /* 🔘 เช็กบ็อกซ์ */
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
     }
 
-    body.dark .task { background-color: var(--dark-card); }
-
-    .task.completed span {
-      text-decoration: line-through;
-      color: #b5b5b5;
-      opacity: 0.6;
-    }
-
-    .task small {
-      display: block;
-      font-size: 12px;
-      color: #999;
-      margin-top: 3px;
-    }
-
-    /* ✅ เอฟเฟกต์ลบ */
+    /* 🎨 เอฟเฟกต์ตอนลบ */
     .task.fade-out {
       opacity: 0;
       transform: translateX(-10px);
@@ -137,17 +172,23 @@
       overflow: hidden;
       margin: 25px 0;
     }
+
     .progress-fill {
       height: 100%;
       width: 0%;
       background-color: var(--accent);
       transition: width 0.5s ease;
     }
+
     .progress-text {
       text-align: center;
       font-size: 14px;
       margin-top: -4px;
       color: #666;
+    }
+
+    body.dark .progress-text {
+      color: #ccc;
     }
 
     /* 🟡 กราฟวงกลม */
@@ -170,7 +211,10 @@
       stroke-linecap: round;
     }
 
-    .progress-bg { stroke: #e8e4dc; }
+    .progress-bg {
+      stroke: #e8e4dc;
+    }
+
     .progress-bar {
       stroke: var(--accent);
       stroke-dasharray: 314;
@@ -178,7 +222,7 @@
       transition: stroke-dashoffset 0.8s ease;
     }
 
-    .progress-text {
+    .progress-text-circle {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -188,29 +232,51 @@
       color: var(--text-dark);
     }
 
-    body.dark .progress-text { color: var(--text-light); }
+    body.dark .progress-text-circle {
+      color: var(--text-light);
+    }
 
-    /* ✨ ปุ่มล้างทั้งหมด */
-    .clear-btn {
-      display: block;
+    /* 📊 แนวโน้มรายสัปดาห์ */
+    .weekly-chart {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .chart-line {
       width: 100%;
-      margin-top: 20px;
-      padding: 12px;
+      height: 160px;
+      background: linear-gradient(to bottom, #fefaf4, #faf8f5);
+      border-radius: 12px;
+      box-shadow: 0 2px 6px var(--shadow-light);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 10px;
+    }
+
+    body.dark .chart-line {
+      background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+      box-shadow: 0 2px 6px var(--shadow-dark);
+    }
+
+    .bar {
+      width: 10%;
       background-color: var(--accent);
-      color: #fff;
-      font-size: 15px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.5s ease;
     }
 
-    .clear-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
+    .bar-label {
+      font-size: 12px;
+      color: #666;
+      margin-top: 5px;
     }
 
-    /* 🌗 ปุ่มสลับธีม */
+    body.dark .bar-label {
+      color: #ccc;
+    }
+
+    /* 🌙 ปุ่มธีม */
     .theme-toggle {
       position: fixed;
       bottom: 20px;
@@ -227,36 +293,50 @@
       color: #fff;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       transition: all 0.3s;
+      z-index: 1000;
     }
-    .theme-toggle:hover { transform: scale(1.1); }
 
-    /* 📊 กราฟแนวโน้มรายสัปดาห์ */
-    .weekly-chart {
-      margin-top: 40px;
-      text-align: center;
+    .theme-toggle:hover {
+      transform: scale(1.1);
     }
-    .weekly-chart h3 { margin-bottom: 10px; font-weight: 500; }
-    .chart-line {
-      width: 100%;
-      height: 160px;
-      background: linear-gradient(to bottom, #fefaf4, #faf8f5);
-      border-radius: 12px;
-      box-shadow: 0 2px 6px var(--shadow-light);
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-around;
-      padding: 10px;
-    }
-    .bar {
-      width: 10%;
-      background-color: var(--accent);
-      border-radius: 4px 4px 0 0;
-      transition: height 0.5s ease;
-    }
-    .bar-label {
-      font-size: 12px;
-      color: #666;
-      margin-top: 5px;
+
+    /* 📱 Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px 80px;
+      }
+
+      .input-section {
+        flex-direction: column;
+      }
+
+      .input-section button {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 1.4em;
+      }
+
+      .task {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .task button {
+        align-self: flex-end;
+      }
+
+      .progress-circle {
+        width: 100px;
+        height: 100px;
+      }
+
+      .progress-circle svg {
+        width: 100px;
+        height: 100px;
+      }
     }
   </style>
 </head>
@@ -265,7 +345,7 @@
   <div class="container">
     <h1>📋 To-Do List มินิมอล</h1>
 
-    <div class="category-bar">
+    <div class="category-bar" style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
       <button class="category-btn active" onclick="filterCategory('all')">รวมงาน</button>
       <button class="category-btn" onclick="filterCategory('work')">งาน</button>
       <button class="category-btn" onclick="filterCategory('personal')">ส่วนตัว</button>
@@ -278,7 +358,7 @@
         <circle class="progress-bg" cx="60" cy="60" r="50"></circle>
         <circle class="progress-bar" cx="60" cy="60" r="50"></circle>
       </svg>
-      <div class="progress-text" id="progressTextCircle">0%</div>
+      <div class="progress-text-circle" id="progressTextCircle">0%</div>
     </div>
 
     <div class="weekly-chart">
@@ -320,11 +400,9 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
     let currentCategory = 'all';
     let allTasks = [];
 
-    // 📥 โหลดงานจาก Firestore
     async function loadTasks() {
       const snapshot = await getDocs(collection(db, "tasks"));
       const list = document.getElementById("taskList");
@@ -332,7 +410,7 @@
       allTasks = [];
       let workCount = 0, personalCount = 0, doneCount = 0;
 
-      snapshot.forEach((docSnap) => {
+      snapshot.forEach(docSnap => {
         const task = docSnap.data();
         task.id = docSnap.id;
         allTasks.push(task);
@@ -348,9 +426,7 @@
       const percent = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
       document.getElementById("progressFill").style.width = percent + "%";
       document.getElementById("progressText").textContent =
-        totalCount
-          ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)`
-          : "ยังไม่มีงานที่เสร็จ";
+        totalCount ? `เสร็จแล้ว ${doneCount}/${totalCount} งาน (${percent}%)` : "ยังไม่มีงานที่เสร็จ";
 
       const circle = document.querySelector(".progress-bar");
       const textCircle = document.getElementById("progressTextCircle");
@@ -362,11 +438,8 @@
         .filter(t => currentCategory === 'all' || t.category === currentCategory)
         .forEach(task => {
           const date = task.createdAt
-            ? new Date(
-                typeof task.createdAt === "number"
-                  ? task.createdAt
-                  : Date.parse(task.createdAt)
-              ).toLocaleDateString("th-TH")
+            ? new Date(typeof task.createdAt === "number" ? task.createdAt : Date.parse(task.createdAt))
+              .toLocaleDateString("th-TH")
             : "-";
 
           const div = document.createElement("div");
@@ -388,7 +461,6 @@
       updateWeeklyChart();
     }
 
-    // ➕ เพิ่มงานใหม่
     async function addTask() {
       const input = document.getElementById("taskInput");
       const category = document.getElementById("categorySelect").value;
@@ -397,16 +469,13 @@
 
       try {
         await addDoc(collection(db, "tasks"), {
-          text: text,
-          category: category,
-          completed: false,
-          createdAt: new Date().getTime()
+          text, category, completed: false, createdAt: new Date().getTime()
         });
         input.value = "";
         loadTasks();
-      } catch (error) {
-        console.error("เพิ่มงานล้มเหลว:", error);
-        alert("ไม่สามารถเพิ่มงานได้ กรุณารีเฟรชหน้าเว็บแล้วลองอีกครั้ง");
+      } catch (err) {
+        console.error(err);
+        alert("เพิ่มงานไม่สำเร็จ กรุณารีเฟรชแล้วลองอีกครั้ง");
       }
     }
 
@@ -416,9 +485,9 @@
     }
 
     async function deleteTask(id) {
-      const taskElement = event.target.closest(".task");
-      if (taskElement) {
-        taskElement.classList.add("fade-out");
+      const el = event.target.closest(".task");
+      if (el) {
+        el.classList.add("fade-out");
         setTimeout(async () => {
           await deleteDoc(doc(db, "tasks", id));
           loadTasks();
@@ -435,7 +504,7 @@
 
     function filterCategory(cat) {
       currentCategory = cat;
-      document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
       const active = document.querySelector(`.category-btn[onclick*="${cat}"]`);
       if (active) active.classList.add('active');
       loadTasks();
@@ -468,13 +537,9 @@
         d.setDate(today.getDate() - (6 - i));
         return d.toISOString().slice(0, 10);
       });
-      const data = days.map(day => {
-        return allTasks.filter(t => {
-          if (!t.completed) return false;
-          const dateStr = (t.createdAt && t.createdAt.slice) ? t.createdAt.slice(0, 10) : "";
-          return dateStr === day;
-        }).length;
-      });
+      const data = days.map(day =>
+        allTasks.filter(t => t.completed && new Date(t.createdAt).toISOString().slice(0, 10) === day).length
+      );
       chart.innerHTML = "";
       const maxVal = Math.max(...data, 1);
       days.forEach((day, i) => {
