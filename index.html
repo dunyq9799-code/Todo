@@ -53,6 +53,19 @@
     .goal-section { margin-top: 40px; background-color: #FFF; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .goal-progress { height: 12px; background-color: #F0E8D8; border-radius: 8px; overflow: hidden; }
     .goal-fill { height: 100%; width: 0%; background-color: #E8DCC7; transition: width 0.5s ease; }
+    /* ✅ ปรับสี checkbox ให้เป็นเขียวสบายตา */
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #4CAF50; /* สีเขียวธรรมชาติ */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* เพิ่มเอฟเฟกต์เวลา hover */
+input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
   </style>
 </head>
 
