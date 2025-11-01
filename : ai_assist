@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TodoTask Pro – AI Assist Room</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent:#e0c097;
+  --bg-light:#faf8f5;
+  --bg-dark:#1f1f1f;
+  --card-light:#fff;
+  --card-dark:#2a2a2a;
+}
+body {
+  font-family:'Sarabun',sans-serif;
+  background:var(--bg-light);
+  color:#333;
+  margin:0;
+  transition:0.4s;
+}
+body.dark {background:var(--bg-dark);color:#f5f5f5;}
+header{text-align:center;padding:20px;}
+header h1{color:var(--accent);margin:0;}
+.container{
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:25px;
+}
+.card{
+  background:var(--card-light);
+  border:1px solid var(--accent);
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+body.dark .card{background:var(--card-dark);}
+h3{color:var(--accent);}
+.chart{
+  width:100%;
+  height:200px;
+}
+button{
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:10px 15px;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover{transform:scale(1.05);}
+.ai-box{
+  background:rgba(224,192,151,0.1);
+  border-left:4px solid var(--accent);
+  padding:10px 15px;
+  border-radius:8px;
+  font-style:italic;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🤖 AI Assist Room</h1>
+  <p id="motivation"></p>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h3>🧠 AI Mood Tracker</h3>
+    <p id="moodText">กำลังวิเคราะห์พลังงานของคุณ...</p>
+  </div>
+
+  <div class="card">
+    <h3>📊 Energy Graph</h3>
+    <canvas id="energyChart" class="chart"></canvas>
+  </div>
+
+  <div class="card">
+    <h3>🗓️ Smart Daily Plan</h3>
+    <div id="dailyPlan"></div>
+  </div>
+
+  <div class="card">
+    <h3>💬 AI ข้อเสนอแนะ</h3>
+    <div id="aiAdvice" class="ai-box"></div>
+  </div>
+
+  <button onclick="location.href='dashboard.html'">📊 กลับแดชบอร์ด</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyB_7tyj_BAyFzKEYVrZXfQjWCUXGS7VqKY",
+  authDomain:"my-todo-list-9d2fa.firebaseapp.com",
+  projectId:"my-todo-list-9d2fa"
+};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+
+// 🧠 ข้อความสร้างแรงบันดาลใจ
+const quotes=[
+  "“ทุกงานที่เสร็จคืออีกก้าวสู่เป้าหมายที่ยิ่งใหญ่”",
+  "“พลังของคุณวันนี้ คือแรงผลักของวันพรุ่งนี้”",
+  "“ความต่อเนื่องคือพลังที่แท้จริง”",
+  "“อย่าแข่งขันกับใคร แข่งกับตัวเองเมื่อวานก็พอ”"
+];
+document.getElementById('motivation').textContent=quotes[Math.floor(Math.random()*quotes.length)];
+
+// 📊 วิเคราะห์พลังงานจากงานในระบบ
+async function analyzeTasks(){
+  const snapshot=await getDocs(collection(db,"tasks"));
+  const tasks=snapshot.docs.map(d=>d.data());
+  const completed=tasks.filter(t=>t.completed).length;
+  const total=tasks.length;
+  const percent=Math.round((completed/total)*100)||0;
+  const mood=document.getElementById('moodText');
+  if(percent>80)mood.textContent="🌟 สุดยอด! พลังของคุณทะลุขีดจำกัดแล้ว";
+  else if(percent>50)mood.textContent="💪 กำลังไปได้ดี รักษาความสม่ำเสมอไว้!";
+  else mood.textContent="🧘 พักบ้างก็ได้ เติมพลังอีกหน่อยแล้วลุยต่อ";
+
+  // กราฟพลังงานจำลอง
+  const ctx=document.getElementById('energyChart');
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'],
+      datasets:[{
+        label:'ระดับพลังงาน (%)',
+        data:[30,45,60,70,55,80,90],
+        borderColor:'rgba(224,192,151,1)',
+        backgroundColor:'rgba(224,192,151,0.2)',
+        fill:true,
+        tension:0.4
+      }]
+    },
+    options:{scales:{y:{beginAtZero:true,max:100}}}
+  });
+
+  // สร้างแผนรายวันอัตโนมัติ
+  const planDiv=document.getElementById('dailyPlan');
+  const now=new Date();
+  const hours=now.getHours();
+  let suggestion="";
+  if(hours<10)suggestion="☀️ ตอนเช้าเหมาะกับงานที่ใช้สมาธิสูง เช่น วางแผน / เขียนงาน";
+  else if(hours<15)suggestion="🌤 ช่วงบ่ายให้โฟกัสกับงานประจำที่ต้องเคลียร์";
+  else suggestion="🌙 ตอนเย็นเหมาะกับงานส่วนตัวหรือสรุปผลงาน";
+  planDiv.innerHTML=`
+    <ul>
+      <li>${suggestion}</li>
+      <li>🧘 ลองพักสายตา 5 นาทีทุกชั่วโมง</li>
+      <li>💧 ดื่มน้ำเพื่อเพิ่มพลังสมอง</li>
+      <li>🎯 ทำงานที่สำคัญที่สุดก่อนอื่นเสมอ</li>
+    </ul>
+  `;
+
+  // แนะนำ AI แบบสุ่ม
+  const advices=[
+    "💡 ลองตั้งเป้าหมายเล็ก ๆ ในแต่ละวัน แล้วคุณจะเห็นพลังการเปลี่ยนแปลง",
+    "🔥 งานที่คุณผลักออกไปบ่อยที่สุด มักเป็นงานที่สำคัญที่สุด",
+    "🌙 ถ้าเหนื่อย ลองใช้โหมด Galaxy เพื่อฟื้นพลัง",
+    "⚡ ทุกครั้งที่คุณติ๊กว่างานเสร็จ คุณกำลังเพิ่ม XP ให้ตัวเอง"
+  ];
+  document.getElementById('aiAdvice').textContent=advices[Math.floor(Math.random()*advices.length)];
+}
+analyzeTasks();
+</script>
+</body>
+</html>
