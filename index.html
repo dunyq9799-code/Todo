@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>To-Do Pro | มินิมอลมืออาชีพ</title>
+  <title>TodoTask Pro - จัดการงานมินิมอล</title>
 
-  <!-- ฟอนต์ไทย -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
@@ -16,7 +15,8 @@
       --accent: #e0c097;
       --text-dark: #444;
       --text-light: #f5f5f5;
-      --shadow-light: rgba(0, 0, 0, 0.05);
+      --shadow-light: rgba(0,0,0,0.05);
+      --shadow-dark: rgba(0,0,0,0.3);
     }
 
     body {
@@ -24,178 +24,234 @@
       background-color: var(--cream-bg);
       color: var(--text-dark);
       margin: 0;
-      transition: background 0.4s, color 0.4s;
+      transition: background 0.5s, color 0.3s;
     }
-    body.dark { background-color: var(--dark-bg); color: var(--text-light); }
 
-    .container { max-width: 640px; margin: 0 auto; padding: 40px 20px 100px; }
+    body.dark {
+      background-color: var(--dark-bg);
+      color: var(--text-light);
+    }
 
-    h1 { text-align: center; font-weight: 500; margin-bottom: 20px; }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px 120px;
+    }
 
-    /* 🔘 แถบปุ่มล่าง */
-    .bottom-nav {
+    h1 {
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    /* ปุ่มเพิ่มงาน (ล่างขวา) */
+    .add-btn {
       position: fixed;
-      bottom: 20px;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      z-index: 50;
-    }
-
-    .nav-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 10px 18px;
-      font-size: 15px;
-      cursor: pointer;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
-    }
-    .nav-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-    /* ปุ่มโหมด */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
+      bottom: 90px;
       right: 20px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
+      width: 65px;
+      height: 65px;
       background-color: var(--accent);
       color: #fff;
-      font-size: 24px;
       border: none;
+      border-radius: 50%;
+      font-size: 34px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .add-btn:hover { transform: scale(1.1); opacity: 0.9; }
+
+    /* ปุ่มตั้งค่า */
+    .settings-btn {
+      position: fixed;
+      bottom: 165px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .settings-btn:hover { transform: scale(1.1); opacity: 0.9; }
+
+    /* ปุ่มธีม */
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 25px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transition: all 0.3s ease;
     }
     .theme-toggle:hover { transform: scale(1.1); }
 
-    /* กล่องงาน */
+    /* รายการงาน */
     .task {
-      background: #fff;
+      background-color: #fff;
+      border: 1.5px solid var(--accent);
       border-radius: 12px;
-      padding: 10px 14px;
-      box-shadow: 0 2px 8px var(--shadow-light);
+      padding: 12px 16px;
       margin-bottom: 10px;
+      box-shadow: 0 2px 8px var(--shadow-light);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border: 1px solid var(--accent);
+      justify-content: space-between;
+      transition: 0.3s;
     }
-    body.dark .task { background-color: var(--dark-card); }
+
+    body.dark .task {
+      background-color: var(--dark-card);
+      border-color: var(--accent);
+    }
+
+    .task.completed span {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .task small {
+      display: block;
+      font-size: 12px;
+      color: #999;
+    }
 
     input[type="checkbox"] {
       width: 20px;
       height: 20px;
-      accent-color: var(--accent); /* ✅ สีทองอ่อน */
-    }
-
-    .task span { flex: 1; margin-left: 8px; }
-    .task.completed span {
-      text-decoration: line-through;
-      color: #999;
-      opacity: 0.7;
-    }
-
-    /* ปุ่มเพิ่มงาน */
-    .add-btn {
-      position: fixed;
-      bottom: 90px;
-      right: 25px;
-      width: 65px;
-      height: 65px;
-      background-color: var(--accent);
-      border: none;
-      border-radius: 50%;
-      color: white;
-      font-size: 36px;
+      accent-color: var(--accent);
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-      transition: 0.3s;
     }
-    .add-btn:hover { transform: scale(1.1); }
 
-    /* ป๊อปอัพเพิ่มงาน */
-    .popup {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
+    .task button {
+      border: 2px solid var(--accent);
+      background: transparent;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
-    .popup-content {
-      background: #fff;
-      border-radius: 15px;
+    .task button:hover {
+      background-color: var(--accent);
+      color: #fff;
+      transform: rotate(90deg);
+    }
+
+    /* Popup เพิ่มงาน */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .popup {
+      background-color: #fffdf8;
+      border-radius: 16px;
       padding: 20px;
       width: 90%;
       max-width: 400px;
-      border: 2px solid var(--accent);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: popupIn 0.3s ease;
     }
-    body.dark .popup-content { background: var(--dark-card); color: var(--text-light); }
+
+    body.dark .popup {
+      background-color: var(--dark-card);
+      color: var(--text-light);
+    }
+
+    @keyframes popupIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
 
     .popup input, .popup select {
-      width: 90%;
-      padding: 10px;
-      border: 1px solid #ccc;
+      width: 100%;
+      padding: 12px;
       border-radius: 10px;
-      margin: 8px 0;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
       font-size: 15px;
+    }
+
+    body.dark .popup input, body.dark .popup select {
+      background-color: var(--dark-card);
+      color: var(--text-light);
+      border-color: #555;
     }
 
     .popup button {
-      background: var(--accent);
-      color: white;
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent);
       border: none;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 15px;
-      margin-top: 10px;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 10px;
       cursor: pointer;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #888;
+    }
+    .popup-close:hover { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .add-btn, .settings-btn, .theme-toggle {
+        width: 50px; height: 50px; font-size: 22px;
+      }
+      .task { font-size: 14px; }
     }
   </style>
 </head>
 
 <body>
   <div class="container">
-    <h1>📋 To-Do List มินิมอล</h1>
+    <h1>📋 TodoTask Pro</h1>
     <div id="taskList"></div>
   </div>
 
-  <!-- 🌗 ปุ่มโหมด -->
+  <!-- ปุ่มต่าง ๆ -->
+  <button class="settings-btn" onclick="location.href='profile.html'">⚙️</button>
+  <button class="add-btn" onclick="openPopup()">＋</button>
   <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
 
-  <!-- ➕ ปุ่มเพิ่มงาน -->
-  <button class="add-btn" onclick="openPopup()">＋</button>
-
-  <!-- 🧾 ป๊อปอัพเพิ่มงาน -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h3>เพิ่มงานใหม่</h3>
-      <input type="text" id="taskInput" placeholder="ชื่อสิ่งที่ต้องทำ...">
+  <!-- Popup เพิ่มงาน -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <button class="popup-close" onclick="closePopup()">✖️</button>
+      <h3>➕ เพิ่มงานใหม่</h3>
+      <input type="text" id="taskInput" placeholder="ชื่อสิ่งที่ต้องทำ..." />
       <select id="categorySelect">
         <option value="work">งาน</option>
         <option value="personal">ส่วนตัว</option>
       </select>
-      <div style="margin-top:10px;">
-        <button onclick="addTask()">บันทึก</button>
-        <button onclick="closePopup()">ยกเลิก</button>
-      </div>
+      <button onclick="addTask()">บันทึกงาน</button>
     </div>
-  </div>
-
-  <!-- 🔘 ปุ่มไป Dashboard และ Settings -->
-  <div class="bottom-nav">
-    <button class="nav-btn" onclick="location.href='dashboard.html'">📊 Dashboard</button>
-    <button class="nav-btn" onclick="location.href='settings.html'">⚙️ ตั้งค่า</button>
   </div>
 
   <script type="module">
@@ -215,71 +271,76 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    let allTasks = [];
+
     async function loadTasks() {
       const snapshot = await getDocs(collection(db, "tasks"));
       const list = document.getElementById("taskList");
       list.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const t = docSnap.data();
+      allTasks = [];
+
+      snapshot.forEach(docSnap => {
+        const task = docSnap.data();
+        task.id = docSnap.id;
+        allTasks.push(task);
+      });
+
+      allTasks.forEach(task => {
         const div = document.createElement("div");
-        div.className = `task ${t.completed ? "completed" : ""}`;
+        div.className = `task ${task.completed ? "completed" : ""}`;
+        const date = new Date(task.createdAt || Date.now()).toLocaleDateString("th-TH");
         div.innerHTML = `
-          <label style="display:flex;align-items:center;gap:10px;">
-            <input type="checkbox" ${t.completed ? "checked" : ""} onchange="toggleTask('${docSnap.id}', this.checked)">
-            <span>${t.text}</span>
+          <label style="display:flex;align-items:center;gap:8px;">
+            <input type="checkbox" ${task.completed ? "checked" : ""} onchange="toggleTask('${task.id}', this.checked)" />
+            <div>
+              <span>${task.text}</span>
+              <small>${task.category === "work" ? "หมวด: งาน" : "หมวด: ส่วนตัว"} · ${date}</small>
+            </div>
           </label>
-          <button onclick="deleteTask('${docSnap.id}')">✖️</button>
+          <button onclick="deleteTask('${task.id}')">✖️</button>
         `;
         list.appendChild(div);
       });
     }
 
-    async function addTask() {
-      const input = document.getElementById("taskInput");
-      const category = document.getElementById("categorySelect").value;
-      const text = input.value.trim();
-      if (!text) return alert("กรุณากรอกชื่อสิ่งที่ต้องทำ");
-      await addDoc(collection(db, "tasks"), { text, category, completed: false });
-      closePopup();
-      input.value = "";
-      loadTasks();
-    }
-
-    async function toggleTask(id, completed) {
+    window.toggleTask = async (id, completed) => {
       await updateDoc(doc(db, "tasks", id), { completed });
       loadTasks();
-    }
+    };
 
-    async function deleteTask(id) {
+    window.deleteTask = async (id) => {
       await deleteDoc(doc(db, "tasks", id));
       loadTasks();
-    }
+    };
 
-    window.onload = loadTasks;
-    window.toggleTask = toggleTask;
-    window.deleteTask = deleteTask;
-    window.addTask = addTask;
-  </script>
+    window.addTask = async () => {
+      const text = document.getElementById("taskInput").value.trim();
+      const category = document.getElementById("categorySelect").value;
+      if (!text) return alert("กรุณากรอกชื่องานก่อน");
+      await addDoc(collection(db, "tasks"), {
+        text, category, completed: false, createdAt: Date.now()
+      });
+      closePopup();
+      loadTasks();
+    };
 
-  <script>
-    // 🟡 จัดการป๊อปอัพ
-    const popup = document.getElementById("popup");
-    function openPopup() { popup.style.display = "flex"; }
-    function closePopup() { popup.style.display = "none"; }
-
-    // 🌓 โหลดธีมจาก Settings
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark");
-      document.querySelector(".theme-toggle").textContent = "🌙";
-    }
-
-    function toggleTheme() {
+    window.toggleTheme = function () {
       document.body.classList.toggle("dark");
       const isDark = document.body.classList.contains("dark");
       localStorage.setItem("theme", isDark ? "dark" : "light");
       document.querySelector(".theme-toggle").textContent = isDark ? "🌙" : "☀️";
-    }
+    };
+
+    window.openPopup = () => document.getElementById("popupOverlay").style.display = "flex";
+    window.closePopup = () => document.getElementById("popupOverlay").style.display = "none";
+
+    window.onload = () => {
+      loadTasks();
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") document.body.classList.add("dark");
+      document.querySelector(".theme-toggle").textContent =
+        theme === "dark" ? "🌙" : "☀️";
+    };
   </script>
 </body>
 </html>
