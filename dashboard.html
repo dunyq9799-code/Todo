@@ -1,100 +1,159 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📊 To-Do Pro Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📊 Dashboard - To-Do Pro</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg-light: #faf8f5;
-      --bg-dark: #1f1f1f;
-      --card-dark: #2b2b2b;
+      --cream-bg: #faf8f5;
+      --dark-bg: #1f1f1f;
+      --dark-card: #2a2a2a;
       --accent: #e0c097;
       --text-dark: #444;
       --text-light: #f5f5f5;
+      --shadow-light: rgba(0, 0, 0, 0.05);
     }
 
     body {
       font-family: 'Sarabun', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-light);
+      background-color: var(--cream-bg);
       color: var(--text-dark);
+      margin: 0;
       transition: background 0.4s, color 0.4s;
     }
-    body.dark { background-color: var(--bg-dark); color: var(--text-light); }
+    body.dark { background-color: var(--dark-bg); color: var(--text-light); }
 
     header {
       text-align: center;
-      padding: 20px 10px 10px;
-      font-size: 1.6em;
+      padding: 15px;
+      background: var(--accent);
+      color: white;
+      font-size: 20px;
       font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    .dashboard-container {
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto 80px;
+    /* ปุ่มด้านบน */
+    .top-buttons {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 20px;
     }
-
-    /* ===== การ์ดสรุป ===== */
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 18px;
-      text-align: center;
-      border: 1.5px solid var(--accent);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    .top-buttons button {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--accent);
       transition: 0.3s;
     }
-    .card:hover { transform: translateY(-4px); }
-    body.dark .card { background: var(--card-dark); }
+    .top-buttons button:hover { transform: scale(1.1); }
 
-    .card h3 {
-      margin: 5px 0;
-      font-size: 1.1em;
-      font-weight: 500;
+    /* 🔹 แท็บ */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      border-bottom: 2px solid #ddd;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(5px);
+      position: sticky;
+      top: 60px;
+      z-index: 40;
     }
-    .card span {
-      font-size: 1.4em;
-      font-weight: 600;
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      border-color: var(--accent);
       color: var(--accent);
     }
 
-    /* ===== กราฟวงกลม ===== */
-    .circle-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      margin: 30px 0;
+    /* 🔸 เนื้อหาแท็บ */
+    .tab-content {
+      display: none;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
     }
+    .tab-content.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* สรุปงาน */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+    }
+    .summary-card {
+      background: #fff;
+      border: 2px solid var(--accent);
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 8px var(--shadow-light);
+      transition: 0.3s;
+    }
+    .summary-card:hover { transform: translateY(-5px); }
+    body.dark .summary-card { background: var(--dark-card); }
+
+    .summary-card h2 {
+      margin: 5px 0;
+      font-size: 28px;
+      color: var(--accent);
+    }
+    .summary-card p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* 🟡 กราฟวงกลม */
     .progress-circle {
       position: relative;
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
+      margin: 40px auto;
     }
+
     .progress-circle svg {
       transform: rotate(-90deg);
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
     }
-    circle {
+
+    .progress-circle circle {
       fill: none;
       stroke-width: 12;
       stroke-linecap: round;
     }
-    .bg-ring { stroke: #e5dfd6; }
-    .progress-ring { stroke: var(--accent); stroke-dasharray: 440; stroke-dashoffset: 440; transition: stroke-dashoffset 0.6s ease; }
-    .percent-text {
+
+    .progress-bg {
+      stroke: #e8e4dc;
+    }
+    .progress-bar {
+      stroke: var(--accent);
+      stroke-dasharray: 502;
+      stroke-dashoffset: 502;
+      transition: stroke-dashoffset 0.8s ease;
+    }
+    .progress-text {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -103,100 +162,90 @@
       font-weight: 600;
       color: var(--text-dark);
     }
-    body.dark .percent-text { color: var(--text-light); }
+    body.dark .progress-text { color: var(--text-light); }
 
-    /* ===== กราฟแนวโน้ม ===== */
-    .weekly-chart {
-      margin-top: 40px;
-      text-align: center;
-    }
-    .weekly-chart h3 {
-      font-weight: 500;
-      margin-bottom: 10px;
-    }
+    /* 📊 กราฟแนวโน้ม */
     .chart-line {
       width: 100%;
-      height: 160px;
+      height: 180px;
       background: linear-gradient(to bottom, #fefaf4, #faf8f5);
       border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 6px var(--shadow-light);
       display: flex;
       align-items: flex-end;
       justify-content: space-around;
       padding: 10px;
     }
+
     .bar {
       width: 10%;
       background-color: var(--accent);
-      border-radius: 4px 4px 0 0;
+      border-radius: 6px 6px 0 0;
       transition: height 0.5s ease;
     }
+
     .bar-label {
+      text-align: center;
       font-size: 12px;
-      margin-top: 5px;
+      margin-top: 6px;
       color: #666;
     }
-    body.dark .bar-label { color: #ccc; }
 
-    /* ===== ปุ่มกลับ ===== */
-    .back-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: 0.3s;
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      opacity: 0.7;
     }
-    .back-btn:hover { transform: scale(1.1); }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .card h3 { font-size: 1em; }
-      .card span { font-size: 1.3em; }
+    /* 📱 Responsive */
+    @media (max-width: 600px) {
+      .summary-card h2 { font-size: 22px; }
+      .progress-circle { width: 130px; height: 130px; }
+      .tab-btn { font-size: 14px; padding: 10px; }
     }
   </style>
 </head>
 
 <body>
-  <header>📊 สรุปงานทั้งหมด (Dashboard)</header>
-  <div class="dashboard-container">
-    <!-- การ์ดสรุป -->
-    <div class="summary">
-      <div class="card"><h3>รวมงานทั้งหมด</h3><span id="totalTasks">0</span></div>
-      <div class="card"><h3>งานที่เสร็จแล้ว</h3><span id="doneTasks">0</span></div>
-      <div class="card"><h3>งานที่เหลือ</h3><span id="pendingTasks">0</span></div>
-      <div class="card"><h3>หมวดงาน</h3><span id="workTasks">0</span></div>
-      <div class="card"><h3>หมวดส่วนตัว</h3><span id="personalTasks">0</span></div>
-    </div>
+  <header>📊 Dashboard</header>
+  <div class="top-buttons">
+    <button onclick="location.href='index.html'">🏠</button>
+    <button onclick="location.href='settings.html'">⚙️</button>
+  </div>
 
-    <!-- กราฟวงกลม -->
-    <div class="circle-container">
-      <h3>เปอร์เซ็นต์ความสำเร็จ</h3>
-      <div class="progress-circle">
-        <svg>
-          <circle class="bg-ring" cx="75" cy="75" r="70"></circle>
-          <circle class="progress-ring" cx="75" cy="75" r="70"></circle>
-        </svg>
-        <div class="percent-text" id="percentText">0%</div>
-      </div>
-    </div>
+  <!-- 🔹 Tabs -->
+  <div class="tabs">
+    <div class="tab-btn active" onclick="openTab('summary')">สรุปงาน</div>
+    <div class="tab-btn" onclick="openTab('progress')">เปอร์เซ็นต์</div>
+    <div class="tab-btn" onclick="openTab('trend')">แนวโน้ม</div>
+  </div>
 
-    <!-- กราฟแนวโน้ม -->
-    <div class="weekly-chart">
-      <h3>แนวโน้มงานที่เสร็จในรอบ 7 วัน</h3>
-      <div class="chart-line" id="chartLine"></div>
+  <!-- 🔸 Tab 1: Summary -->
+  <div class="tab-content active" id="summary">
+    <h3>ภาพรวมงานทั้งหมด</h3>
+    <div class="summary-grid" id="summaryGrid"></div>
+  </div>
+
+  <!-- 🔸 Tab 2: Progress -->
+  <div class="tab-content" id="progress">
+    <h3>เปอร์เซ็นต์ความสำเร็จรวม</h3>
+    <div class="progress-circle">
+      <svg>
+        <circle class="progress-bg" cx="80" cy="80" r="80"></circle>
+        <circle class="progress-bar" cx="80" cy="80" r="80"></circle>
+      </svg>
+      <div class="progress-text" id="progressText">0%</div>
     </div>
   </div>
 
-  <!-- ปุ่มกลับ -->
-  <button class="back-btn" onclick="location.href='index.html'">🏠</button>
+  <!-- 🔸 Tab 3: Trend -->
+  <div class="tab-content" id="trend">
+    <h3>แนวโน้มการทำงานใน 7 วัน</h3>
+    <div class="chart-line" id="chartLine"></div>
+  </div>
+
+  <footer>© To-Do Pro Dashboard</footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
@@ -214,40 +263,44 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    let allTasks = [];
 
-    // ✅ โหลดธีมที่ซิงค์กับหน้าแรก
-    if (localStorage.getItem("theme") === "dark") document.body.classList.add("dark");
-
-    async function loadDashboard() {
+    async function loadData() {
       const snapshot = await getDocs(collection(db, "tasks"));
-      const tasks = snapshot.docs.map(d => d.data());
-
-      const total = tasks.length;
-      const done = tasks.filter(t => t.completed).length;
-      const pending = total - done;
-      const work = tasks.filter(t => t.category === "work").length;
-      const personal = tasks.filter(t => t.category === "personal").length;
-
-      document.getElementById("totalTasks").textContent = total;
-      document.getElementById("doneTasks").textContent = done;
-      document.getElementById("pendingTasks").textContent = pending;
-      document.getElementById("workTasks").textContent = work;
-      document.getElementById("personalTasks").textContent = personal;
-
-      // 🔘 อัปเดตกราฟวงกลม
-      const percent = total ? Math.round((done / total) * 100) : 0;
-      const circle = document.querySelector(".progress-ring");
-      const offset = 440 - (440 * percent) / 100;
-      circle.style.strokeDashoffset = offset;
-      document.getElementById("percentText").textContent = percent + "%";
-
-      // 📈 อัปเดตกริฟแนวโน้ม
-      updateWeeklyChart(tasks);
+      allTasks = snapshot.docs.map(doc => doc.data());
+      updateSummary();
+      updateProgress();
+      updateTrend();
     }
 
-    function updateWeeklyChart(tasks) {
+    function updateSummary() {
+      const total = allTasks.length;
+      const done = allTasks.filter(t => t.completed).length;
+      const work = allTasks.filter(t => t.category === "work").length;
+      const personal = allTasks.filter(t => t.category === "personal").length;
+
+      const html = `
+        <div class="summary-card"><h2>${total}</h2><p>รวมงานทั้งหมด</p></div>
+        <div class="summary-card"><h2>${done}</h2><p>เสร็จแล้ว</p></div>
+        <div class="summary-card"><h2>${total - done}</h2><p>คงเหลือ</p></div>
+        <div class="summary-card"><h2>${work}</h2><p>หมวดงาน</p></div>
+        <div class="summary-card"><h2>${personal}</h2><p>หมวดส่วนตัว</p></div>
+      `;
+      document.getElementById("summaryGrid").innerHTML = html;
+    }
+
+    function updateProgress() {
+      const total = allTasks.length;
+      const done = allTasks.filter(t => t.completed).length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      const circle = document.querySelector(".progress-bar");
+      const offset = 502 - (502 * percent) / 100;
+      circle.style.strokeDashoffset = offset;
+      document.getElementById("progressText").textContent = percent + "%";
+    }
+
+    function updateTrend() {
       const chart = document.getElementById("chartLine");
-      chart.innerHTML = "";
       const today = new Date();
       const days = [...Array(7)].map((_, i) => {
         const d = new Date(today);
@@ -255,37 +308,50 @@
         return d.toISOString().slice(0, 10);
       });
 
-      const data = days.map(day => 
-        tasks.filter(t => {
-          if (!t.completed) return false;
-          const dateStr = t.createdAt ? new Date(t.createdAt).toISOString().slice(0,10) : "";
-          return dateStr === day;
-        }).length
-      );
+      const data = days.map(day => {
+        return allTasks.filter(t => {
+          if (!t.completed || !t.createdAt) return false;
+          const d = new Date(t.createdAt.seconds ? t.createdAt.seconds * 1000 : t.createdAt);
+          return d.toISOString().slice(0,10) === day;
+        }).length;
+      });
 
-      const maxVal = Math.max(...data, 1);
+      chart.innerHTML = "";
+      const max = Math.max(...data, 1);
       days.forEach((day, i) => {
         const bar = document.createElement("div");
         bar.className = "bar";
-        bar.style.height = `${(data[i] / maxVal) * 100}%`;
+        bar.style.height = `${(data[i] / max) * 100}%`;
+
+        const label = document.createElement("div");
+        label.className = "bar-label";
+        label.textContent = new Date(day).toLocaleDateString("th-TH", { weekday: "short" });
 
         const container = document.createElement("div");
         container.style.display = "flex";
         container.style.flexDirection = "column";
         container.style.alignItems = "center";
-
-        const label = document.createElement("div");
-        label.className = "bar-label";
-        const date = new Date(day);
-        label.textContent = date.toLocaleDateString("th-TH", { weekday: "short" });
-
         container.appendChild(bar);
         container.appendChild(label);
         chart.appendChild(container);
       });
     }
 
-    loadDashboard();
+    loadData();
+  </script>
+
+  <script>
+    // 🟡 แท็บ
+    function openTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.querySelector(`.tab-btn[onclick*="${tabId}"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // 🌗 ธีมซิงก์
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") document.body.classList.add("dark");
   </script>
 </body>
 </html>
